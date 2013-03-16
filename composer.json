@@ -14,8 +14,14 @@
         }
     ],
     "require": {
-        "php": ">=5.2.1",
+        "php": ">=5.2.1"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ozgur/php-est"
+        }
+    ],
     "autoload": {
         "psr-0": {"est": "src/"}
     }
