@@ -1,0 +1,22 @@
+{
+    "name": "ozgur/est",
+    "version": "1.0",
+    "description": "Virtual POS interface to the EST Payment Gateway (Turkey)",
+    "keywords": ["est", "payment", "turkey"],
+    "homepage": "http://ozgur.github.com/php-est/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ozgur Vatansever",
+            "email": "ozgurvt@gmail.com",
+            "homepage": "https://github.com/ozgur"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.1",
+    },
+    "autoload": {
+        "psr-0": {"est": "src/"}
+    }
+}
