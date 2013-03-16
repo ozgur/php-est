@@ -82,3 +82,285 @@ Array
 
 )
 ```
+
+Aynı sipariş numarasıyla tekrar istek yaparsak hata alırız.
+
+```php
+$result = $api->pay($cc_num, $cc_cvv, $month, $year, $amount, $taksit, $order_num);
+print_r($result);
+Array
+(
+    [orderid] => qwaszx
+    [transid] => 10177-TfgE-1-1544
+    [groupid] => qwaszx
+    [response] => Error
+    [return_code] => 99
+    [error_msg] => Bu siparis numarasi ile zaten basarili bir siparis var.
+    [host_msg] =>
+    [auth_code] =>
+    [result] =>
+    [transaction_time] => Array
+        (
+            [tm_sec] => 32
+            [tm_min] => 31
+            [tm_hour] => 19
+            [tm_mday] => 26
+            [tm_mon] => 5
+            [tm_year] => 110
+            [tm_wday] => 6
+            [tm_yday] => 176
+            [unparsed] =>
+        )
+
+)
+```
+
+Ekstra parametrelerde **fatura adresi** ve **teslimat adresi** ile ilgili detayları set edebilirsiniz.
+
+```php
+$extra = array("shipping_address_name" => "Ev Adresim", "billing_address_name" => "Fatura Adresim");
+$api->pay($cc_num, $cc_cvv, $month, $year, $amount, $taksit, $order_num, $typ="Auth", $extra=$extra);
+```
+
+Kullanıcının kredi kartındaki belli bir miktara bloke koymak için *typ* parametresini **PreAuth** olarak göndermeniz gerekmektedir.
+
+```php
+$api->pay($cc_num, $cc_cvv, $month, $year, $amount, $taksit, $order_num, $typ="PreAuth");
+```
+
+Bloke koyduğumuz miktarı kullanıcının kartından çekmek için **.postAuth()** metodunu çekmek istediğiniz miktar ile çağırmanız gerekmektedir.
+
+```php
+$result = $api->postAuth($amount, $order_num);
+print_r($result);
+Array
+(
+    [orderid] => qwaszx
+    [transid] => 10177-TpIF-1-1549
+    [groupid] => qwaszx
+    [response] => Approved
+    [return_code] => 00
+    [error_msg] =>
+    [host_msg] =>
+    [auth_code] => 691348
+    [host_ref_num] => 017719080777
+    [result] => 1
+    [transaction_time] => Array
+        (
+            [tm_sec] => 8
+            [tm_min] => 41
+            [tm_hour] => 19
+            [tm_mday] => 26
+            [tm_mon] => 5
+            [tm_year] => 110
+            [tm_wday] => 6
+            [tm_yday] => 176
+            [unparsed] =>
+        )
+
+)
+```
+
+Siparişi yada yaptığınız postAuth isteğini iptal etmek için **.cancel()** metodu çağrılmalıdır. Sipariş numarası parametre olarak verilmelidir.
+
+```php
+$result = $api->cancel($order_num);
+print_r($result);
+Array
+(
+    [orderid] => qwaszx
+    [transid] => 10177-TpIF-1-1549
+    [groupid] => qwaszx
+    [response] => Approved
+    [return_code] => 00
+    [error_msg] =>
+    [host_msg] =>
+    [auth_code] => 691348
+    [host_ref_num] => 017719080777
+    [result] => 1
+    [transaction_time] => Array
+        (
+            [tm_sec] => 8
+            [tm_min] => 41
+            [tm_hour] => 19
+            [tm_mday] => 26
+            [tm_mon] => 5
+            [tm_year] => 110
+            [tm_wday] => 6
+            [tm_yday] => 176
+            [unparsed] =>
+        )
+
+)
+```
+
+Var olmayan ya da daha önceden iptal edilmiş bir siparişi tekrar iptal etmeye çalışılırsa sunucudan aşağıdaki gibi bir cevap alınır.
+
+```php
+$result = $api->cancel("123456abcdef");
+print_r($result);
+Array
+(
+    [orderid] => 123456abcdef
+    [transid] => 10177-TtuB-1-1556
+    [groupid] => 123456abcdef
+    [response] => Error
+    [return_code] => 99
+    [error_msg] => İptal edilmeye uygun satış işlemi bulunamadı.
+    [host_msg] =>
+    [auth_code] =>
+    [host_ref_num] =>
+    [result] =>
+    [transaction_time] => Array
+        (
+            [tm_sec] => 46
+            [tm_min] => 45
+            [tm_hour] => 19
+            [tm_mday] => 26
+            [tm_mon] => 5
+            [tm_year] => 110
+            [tm_wday] => 6
+            [tm_yday] => 176
+            [unparsed] =>
+        )
+
+)
+```
+
+Siparişten belli bir miktarın tutarının müşterinin kartına geri yüklenmesi işlem için **.refund()** metodu çağrılmalıdır.
+
+```php
+$result = $api->refund($amount = 5.00, $orderid = $order_num);
+print_r($result);
+Array
+(
+    [orderid] => qwaszx
+    [transid] => 10177-TxYA-1-1558
+    [groupid] => qwaszx
+    [response] => Approved
+    [return_code] => 00
+    [error_msg] =>
+    [host_msg] => Onay
+    [auth_code] => 154681
+    [host_ref_num] => 017719080780
+    [result] => 1
+    [transaction_time] => Array
+        (
+            [tm_sec] => 24
+            [tm_min] => 49
+            [tm_hour] => 19
+            [tm_mday] => 26
+            [tm_mon] => 5
+            [tm_year] => 110
+            [tm_wday] => 6
+            [tm_yday] => 176
+            [unparsed] =>
+        )
+
+)
+```
+
+Eğer sipariş tutarından daha büyük bir tutar iptal edilmeye çalışırsa aşağıdaki cevap alınır.
+
+```php
+$result = $api->refund($amount = 9999.0, $orderid = $order_num);
+print_r($result);
+Array
+(
+    [orderid] => qwaszx
+    [transid] => 10177-TybA-1-1559
+    [groupid] => qwaszx
+    [response] => Error
+    [return_code] => 99
+    [error_msg] => Net miktardan fazlasi iade edilemez.
+    [host_msg] =>
+    [auth_code] =>
+    [host_ref_num] =>
+    [result] =>
+    [transaction_time] => Array
+        (
+            [tm_sec] => 27
+            [tm_min] => 50
+            [tm_hour] => 19
+            [tm_mday] => 26
+            [tm_mon] => 5
+            [tm_year] => 110
+            [tm_wday] => 6
+            [tm_yday] => 176
+            [unparsed] =>
+        )
+
+)
+```
+
+Eğer **.refund()** metodu ile yaptığınız iade isteğini iptal etmek istiyorsanız iade işleminden size cevap olarak gönderilen **transid** ve **orderid** değerlerini **.cancel()** metoduna göndermeniz gerekmektedir.
+
+```php
+$result = $api->cancel($orderid = $order_num, $transid = '10177-TxYA-1-1558');
+print_r($result);
+Array
+(
+    [orderid] => qwaszx
+    [transid] => 10177-TxYA-1-1558
+    [groupid] => qwaszx
+    [response] => Approved
+    [return_code] => 00
+    [error_msg] =>
+    [host_msg] =>
+    [auth_code] => 154681
+    [host_ref_num] => 017719080780
+    [result] => 1
+    [transaction_time] => Array
+        (
+            [tm_sec] => 24
+            [tm_min] => 49
+            [tm_hour] => 19
+            [tm_mday] => 26
+            [tm_mon] => 5
+            [tm_year] => 110
+            [tm_wday] => 6
+            [tm_yday] => 176
+            [unparsed] =>
+        )
+
+)
+```
+
+Daha önceden verilmiş bir siparişin detayı öğrenilmek isteniyorsa **.getDetail()** metodu kullanılmalıdır. Bu metoda sipariş numarası parametre olarak verilir.
+
+```php
+$result = $api->getDetail($order_num);
+print_r($result);
+Array
+(
+    [transid] => 10177-TK3E-1-1540
+    [orderid] => testorderid01234
+    [return_code] => 00
+    [host_ref_num] => 017719080774
+    [error_msg] => Record(s) found for testorderid01234
+    [charge_type] => S
+    [auth_code] => 931005
+    [amount] => 10
+    [transaction_time] => Array
+        (
+            [tm_sec] => 53
+            [tm_min] => 10
+            [tm_hour] => 19
+            [tm_mday] => 26
+            [tm_mon] => 5
+            [tm_year] => 110
+            [tm_wday] => 6
+            [tm_yday] => 176
+            [unparsed] =>
+        )
+
+)
+```
+
+## İptal ve İade Arasındaki Farklar
+
+Bilindiği gibi sanal POS'larda da gerçek POS hesapları gibi gün sonu kavramı vardır. Gün sonu kavramı; gün içinde POS ile ilgili yapılan işlemlerin (para çekimi ve para iadesi gibi) gün sonunda POS sahibinin banka hesabına aktarılması demektir.
+
+Siparişin iptal işlemi gün sonu gelmeden **sadece** aynı gün içinde yapılabilir. Önceki güne ait siparişler iptal edilemezler. Önceki güne ait siparişler ancak **.refund()** metodu ile siparişin tutarı girilerek iade edilirler.
+
+Eğer sipariş iptal edilirse; siparişin yapıldığı ve iptal edildiği gibi detaylar kart sahibinin ektresinde görünmez. Eğer iade yapılırsa iade işlemi kart sahibinin ekstresine yansır. Bankaların çoğunda gün sonu akşam saat **22:00**'dir. Fakat bu saati bankalar durumlarına göre değiştirebilirler.
