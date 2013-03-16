@@ -1,0 +1,393 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Php-est by ozgur</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Php-est</h1>
+        <p>PHP tabanlı EST Sanal POS arabirimi</p>
+
+        <p class="view"><a href="https://github.com/ozgur/php-est">View the Project on GitHub <small>ozgur/php-est</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/ozgur/php-est/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ozgur/php-est/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ozgur/php-est">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>PHP EST</h1>
+
+<p>PHP tabanlı EST Sanal POS Sistemleri Arabirimi</p>
+
+<p><a href="http://www.asseco-see.com.tr/index.asp"><img src="http://www.asseco-see.com.tr/images/est_logo.jpg" alt="EST"></a></p>
+
+<p>Bu arabirim EST tabanlı sanal pos arabirimlerine bağlanıp, kredi kartı ile sipariş verme işleri için geliştirilmiştir.</p>
+
+<p>Bu arabirim sadece <strong>İş Bankası</strong>, <strong>Akbank</strong>, <strong>Anadolubank</strong>, <strong>Halkbank</strong>, <strong>Finansbank</strong> Sanal POS arabirimleri ile uyumludur. Diğer EST tabanlı arabirimler için kullanılamamaktadır.</p>
+
+<p>EST Türkiye'nin e-Ticaret güvenli ödeme sistem ve hizmetleri sağlayıcısıdır. Türkiye'de e-Ticaret ödemeleri alanında faaliyet gösteren bankaların tamamına yakını bunu EST Ürün, Çözüm, Hizmetlerinden bir veya daha fazlasını kullanarak gerçekleştirmektedir.</p>
+
+<h2>Kurulum</h2>
+
+<p>Bu arabirim PHP 5.3.2 ya da daha yüksek sürümlerinde kullanılabilmektedir. Kurulum için <a href="http://getcomposer.org/download/">composer</a> paket yöneticisi kurmanız gerekmektedir.</p>
+
+<pre><code>$ php composer.phar install
+</code></pre>
+
+<h2>Kullanımı</h2>
+
+<p>Bu arabirimi kullanabilmeniz için <strong>İşyeri No</strong>, <strong>Kullanıcı adı</strong> ve <strong>Parola</strong> bilgileri gereklidir. Her bir bankanın kendi sanal POS arabirimlerini kullanabilmek için ayrı ayrı bu bilgileri edinmeniz gerekmektedir. Bu bilgileri edinmek istiyorsanız <strong><a href="mailto:destek@est.com.tr">destek@est.com.tr</a></strong> adresine e-posta yollayınız.</p>
+
+<p>Bu arabirim ile aşağıdaki pos işlemleri yapılabilir;</p>
+
+<ul>
+<li>Sipariş vermek,</li>
+<li>Siparişi iptal etme,</li>
+<li>Siparişten belli bir miktarı iade etme,</li>
+<li>Yapılmış bir siparişin detaylarını görebilme,</li>
+</ul><p>Sanal POS sistemine yapılan bütün istekler EST sınıfı tarafından düzenlenmektedir. EST sınıfının yukarıdaki işlemleri yapabilmesi için aşağıdaki metodlar tanımlanmıştır.</p>
+
+<ul>
+<li>purchase()   ~ Sipariş vermek için bu metod çağrılır.</li>
+<li>postAuth()   ~ Bloke edilen miktarı karttan çekmek için bu metod çağrılır.</li>
+<li>cancel()     ~ Siparişi iptal etmek için bu metod çağrılır.</li>
+<li>refund()     ~ Siparişten belli bir miktar para iade etmek için bu metod çağrılır.</li>
+<li>getDetail()  ~ Bir siparişin detaylarını görmek için bu metod çağrılır.</li>
+</ul><div class="highlight"><pre><span class="k">require</span> <span class="s1">'est.php'</span><span class="p">;</span>
+<span class="nv">$api</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EST</span><span class="p">(</span><span class="s2">"akbank"</span><span class="p">,</span> <span class="s2">"100100000"</span><span class="p">,</span> <span class="s2">"AKTEST"</span><span class="p">,</span> <span class="s2">"AKTEST123"</span><span class="p">,</span> <span class="nv">$debug</span><span class="o">=</span><span class="k">TRUE</span><span class="p">);</span>
+</pre></div>
+
+<p>Eğer test sunucusu değil de gerçek ortamda çalışmak istiyorsanız <strong>debug</strong> parametresini FALSE olarak set ediniz.</p>
+
+<p>Sipariş verme isteği göndermemiz için <strong>.pay()</strong> metodunu çağırmanız gerekmektedir. Bu metodu çağırmak için sırasıyla aşağıdaki parametreler gerekmektedir.</p>
+
+<div class="highlight"><pre><span class="nv">$cc_num</span> <span class="o">=</span> <span class="s2">"5456165456165454"</span><span class="p">;</span> <span class="c1">// kart numarası</span>
+<span class="nv">$cc_cvv</span> <span class="o">=</span> <span class="s2">"000"</span><span class="p">;</span>
+<span class="nv">$month</span> <span class="o">=</span> <span class="s2">"12"</span><span class="p">;</span>
+<span class="nv">$year</span> <span class="o">=</span> <span class="s2">"12"</span><span class="p">;</span>
+<span class="nv">$amount</span> <span class="o">=</span> <span class="mf">10.00</span><span class="p">;</span>
+<span class="nv">$taksit</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// peşin</span>
+<span class="nv">$order_num</span> <span class="o">=</span> <span class="s2">"qwaszx"</span><span class="p">;</span> <span class="c1">// sipariş numarası</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">pay</span><span class="p">(</span><span class="nv">$cc_num</span><span class="p">,</span> <span class="nv">$cc_cvv</span><span class="p">,</span> <span class="nv">$month</span><span class="p">,</span> <span class="nv">$year</span><span class="p">,</span> <span class="nv">$amount</span><span class="p">,</span> <span class="nv">$taksit</span><span class="p">,</span> <span class="nv">$order_num</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TeYF</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1543</span>
+    <span class="p">[</span><span class="nx">groupid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">response</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Approved</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">00</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">host_msg</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Onay</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">116745</span>
+    <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">24</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">30</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<p>Aynı sipariş numarasıyla tekrar istek yaparsak hata alırız.</p>
+
+<div class="highlight"><pre><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">pay</span><span class="p">(</span><span class="nv">$cc_num</span><span class="p">,</span> <span class="nv">$cc_cvv</span><span class="p">,</span> <span class="nv">$month</span><span class="p">,</span> <span class="nv">$year</span><span class="p">,</span> <span class="nv">$amount</span><span class="p">,</span> <span class="nv">$taksit</span><span class="p">,</span> <span class="nv">$order_num</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TfgE</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1544</span>
+    <span class="p">[</span><span class="nx">groupid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">response</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Error</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">99</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Bu</span> <span class="nx">siparis</span> <span class="nx">numarasi</span> <span class="nx">ile</span> <span class="nx">zaten</span> <span class="nx">basarili</span> <span class="nx">bir</span> <span class="nx">siparis</span> <span class="k">var</span><span class="o">.</span>
+    <span class="p">[</span><span class="nx">host_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">32</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">31</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<p>Ekstra parametrelerde <strong>fatura adresi</strong> ve <strong>teslimat adresi</strong> ile ilgili detayları set edebilirsiniz.</p>
+
+<div class="highlight"><pre><span class="nv">$extra</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s2">"shipping_address_name"</span> <span class="o">=&gt;</span> <span class="s2">"Ev Adresim"</span><span class="p">,</span> <span class="s2">"billing_address_name"</span> <span class="o">=&gt;</span> <span class="s2">"Fatura Adresim"</span><span class="p">);</span>
+<span class="nv">$api</span><span class="o">-&gt;</span><span class="na">pay</span><span class="p">(</span><span class="nv">$cc_num</span><span class="p">,</span> <span class="nv">$cc_cvv</span><span class="p">,</span> <span class="nv">$month</span><span class="p">,</span> <span class="nv">$year</span><span class="p">,</span> <span class="nv">$amount</span><span class="p">,</span> <span class="nv">$taksit</span><span class="p">,</span> <span class="nv">$order_num</span><span class="p">,</span> <span class="nv">$typ</span><span class="o">=</span><span class="s2">"Auth"</span><span class="p">,</span> <span class="nv">$extra</span><span class="o">=</span><span class="nv">$extra</span><span class="p">);</span>
+</pre></div>
+
+<p>Kullanıcının kredi kartındaki belli bir miktara bloke koymak için <em>typ</em> parametresini <strong>PreAuth</strong> olarak göndermeniz gerekmektedir.</p>
+
+<div class="highlight"><pre><span class="nv">$api</span><span class="o">-&gt;</span><span class="na">pay</span><span class="p">(</span><span class="nv">$cc_num</span><span class="p">,</span> <span class="nv">$cc_cvv</span><span class="p">,</span> <span class="nv">$month</span><span class="p">,</span> <span class="nv">$year</span><span class="p">,</span> <span class="nv">$amount</span><span class="p">,</span> <span class="nv">$taksit</span><span class="p">,</span> <span class="nv">$order_num</span><span class="p">,</span> <span class="nv">$typ</span><span class="o">=</span><span class="s2">"PreAuth"</span><span class="p">);</span>
+</pre></div>
+
+<p>Bloke koyduğumuz miktarı kullanıcının kartından çekmek için <strong>.postAuth()</strong> metodunu çekmek istediğiniz miktar ile çağırmanız gerekmektedir.</p>
+
+<div class="highlight"><pre><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">postAuth</span><span class="p">(</span><span class="nv">$amount</span><span class="p">,</span> <span class="nv">$order_num</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TpIF</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1549</span>
+    <span class="p">[</span><span class="nx">groupid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">response</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Approved</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">00</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">host_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">691348</span>
+    <span class="p">[</span><span class="nx">host_ref_num</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">01771</span><span class="mi">9080777</span>
+    <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">8</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">41</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<p>Siparişi yada yaptığınız postAuth isteğini iptal etmek için <strong>.cancel()</strong> metodu çağrılmalıdır. Sipariş numarası parametre olarak verilmelidir.</p>
+
+<div class="highlight"><pre><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">cancel</span><span class="p">(</span><span class="nv">$order_num</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TpIF</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1549</span>
+    <span class="p">[</span><span class="nx">groupid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">response</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Approved</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">00</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">host_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">691348</span>
+    <span class="p">[</span><span class="nx">host_ref_num</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">01771</span><span class="mi">9080777</span>
+    <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">8</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">41</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<p>Var olmayan ya da daha önceden iptal edilmiş bir siparişi tekrar iptal etmeye çalışılırsa sunucudan aşağıdaki gibi bir cevap alınır.</p>
+
+<div class="highlight"><pre><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">cancel</span><span class="p">(</span><span class="s2">"123456abcdef"</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">123456</span><span class="nx">abcdef</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TtuB</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1556</span>
+    <span class="p">[</span><span class="nx">groupid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">123456</span><span class="nx">abcdef</span>
+    <span class="p">[</span><span class="nx">response</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Error</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">99</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="err">İ</span><span class="nx">ptal</span> <span class="nx">edilmeye</span> <span class="nx">uygun</span> <span class="nx">sat</span><span class="err">ış</span> <span class="nx">i</span><span class="err">ş</span><span class="nx">lemi</span> <span class="nx">bulunamad</span><span class="err">ı</span><span class="o">.</span>
+    <span class="p">[</span><span class="nx">host_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">host_ref_num</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">46</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">45</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<p>Siparişten belli bir miktarın tutarının müşterinin kartına geri yüklenmesi işlem için <strong>.refund()</strong> metodu çağrılmalıdır.</p>
+
+<div class="highlight"><pre><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">refund</span><span class="p">(</span><span class="nv">$amount</span> <span class="o">=</span> <span class="mf">5.00</span><span class="p">,</span> <span class="nv">$orderid</span> <span class="o">=</span> <span class="nv">$order_num</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TxYA</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1558</span>
+    <span class="p">[</span><span class="nx">groupid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">response</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Approved</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">00</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">host_msg</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Onay</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">154681</span>
+    <span class="p">[</span><span class="nx">host_ref_num</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">01771</span><span class="mi">9080780</span>
+    <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">24</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">49</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<p>Eğer sipariş tutarından daha büyük bir tutar iptal edilmeye çalışırsa aşağıdaki cevap alınır.</p>
+
+<div class="highlight"><pre><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">refund</span><span class="p">(</span><span class="nv">$amount</span> <span class="o">=</span> <span class="mf">9999.0</span><span class="p">,</span> <span class="nv">$orderid</span> <span class="o">=</span> <span class="nv">$order_num</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TybA</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1559</span>
+    <span class="p">[</span><span class="nx">groupid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">response</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Error</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">99</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Net</span> <span class="nx">miktardan</span> <span class="nx">fazlasi</span> <span class="nx">iade</span> <span class="nx">edilemez</span><span class="o">.</span>
+    <span class="p">[</span><span class="nx">host_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">host_ref_num</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">27</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">50</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<p>Eğer <strong>.refund()</strong> metodu ile yaptığınız iade isteğini iptal etmek istiyorsanız iade işleminden size cevap olarak gönderilen <strong>transid</strong> ve <strong>orderid</strong> değerlerini <strong>.cancel()</strong> metoduna göndermeniz gerekmektedir.</p>
+
+<div class="highlight"><pre><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">cancel</span><span class="p">(</span><span class="nv">$orderid</span> <span class="o">=</span> <span class="nv">$order_num</span><span class="p">,</span> <span class="nv">$transid</span> <span class="o">=</span> <span class="s1">'10177-TxYA-1-1558'</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TxYA</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1558</span>
+    <span class="p">[</span><span class="nx">groupid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">qwaszx</span>
+    <span class="p">[</span><span class="nx">response</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Approved</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">00</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">host_msg</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">154681</span>
+    <span class="p">[</span><span class="nx">host_ref_num</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">01771</span><span class="mi">9080780</span>
+    <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">24</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">49</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<p>Daha önceden verilmiş bir siparişin detayı öğrenilmek isteniyorsa <strong>.getDetail()</strong> metodu kullanılmalıdır. Bu metoda sipariş numarası parametre olarak verilir.</p>
+
+<div class="highlight"><pre><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="na">getDetail</span><span class="p">(</span><span class="nv">$order_num</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+<span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">transid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10177</span><span class="o">-</span><span class="nx">TK3E</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1540</span>
+    <span class="p">[</span><span class="nx">orderid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">testorderid01234</span>
+    <span class="p">[</span><span class="nx">return_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">00</span>
+    <span class="p">[</span><span class="nx">host_ref_num</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mo">01771</span><span class="mi">9080774</span>
+    <span class="p">[</span><span class="nx">error_msg</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">Record</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="nx">found</span> <span class="k">for</span> <span class="nx">testorderid01234</span>
+    <span class="p">[</span><span class="nx">charge_type</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">S</span>
+    <span class="p">[</span><span class="nx">auth_code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">931005</span>
+    <span class="p">[</span><span class="nx">amount</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10</span>
+    <span class="p">[</span><span class="nx">transaction_time</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">tm_sec</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">53</span>
+            <span class="p">[</span><span class="nx">tm_min</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">10</span>
+            <span class="p">[</span><span class="nx">tm_hour</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">19</span>
+            <span class="p">[</span><span class="nx">tm_mday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">26</span>
+            <span class="p">[</span><span class="nx">tm_mon</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+            <span class="p">[</span><span class="nx">tm_year</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">110</span>
+            <span class="p">[</span><span class="nx">tm_wday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+            <span class="p">[</span><span class="nx">tm_yday</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">176</span>
+            <span class="p">[</span><span class="nx">unparsed</span><span class="p">]</span> <span class="o">=&gt;</span>
+        <span class="p">)</span>
+
+<span class="p">)</span>
+</pre></div>
+
+<h2>İptal ve İade Arasındaki Farklar</h2>
+
+<p>Bilindiği gibi sanal POS'larda da gerçek POS hesapları gibi gün sonu kavramı vardır. Gün sonu kavramı; gün içinde POS ile ilgili yapılan işlemlerin (para çekimi ve para iadesi gibi) gün sonunda POS sahibinin banka hesabına aktarılması demektir.</p>
+
+<p>Siparişin iptal işlemi gün sonu gelmeden <strong>sadece</strong> aynı gün içinde yapılabilir. Önceki güne ait siparişler iptal edilemezler. Önceki güne ait siparişler ancak <strong>.refund()</strong> metodu ile siparişin tutarı girilerek iade edilirler.</p>
+
+<p>Eğer sipariş iptal edilirse; siparişin yapıldığı ve iptal edildiği gibi detaylar kart sahibinin ektresinde görünmez. Eğer iade yapılırsa iade işlemi kart sahibinin ekstresine yansır. Bankaların çoğunda gün sonu akşam saat <strong>22:00</strong>'dir. Fakat bu saati bankalar durumlarına göre değiştirebilirler.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ozgur">ozgur</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
