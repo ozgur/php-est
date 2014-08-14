@@ -97,7 +97,7 @@ class EST {
     $year = str_pad($year, 2, "0", STR_PAD_LEFT);
     $expires = $month . $year;
 
-    $amount = number_format($amount, 2);
+    $amount = number_format($amount, 2, '.', '');
 
     $credentials = $this->__get_credentials();
     $username = $this->name;
